@@ -1,0 +1,50 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+#
+
+trigger:
+  branches:
+    exclude:
+      - '*'
+  paths:
+    exclude:
+      - '*'
+pr:
+    branches:
+      include:
+        - 'dev'
+        - 'test'
+        - 'prod'
+    paths:
+      exclude:
+        - '*'
+
+variables:
+  - group: cm-sigoo-tracking-ms-dev
+  - name: isFeatureBranch
+    value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')]
+  - name: isdevBranch
+    value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/dev')]
+  - name: istesingBranch
+    value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/test')]
+  - name: ismasterBranch
+    value: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/master')]
+  - name: npm_config_cache
+    value: $(Pipeline.Workspace)/.npm
+
+resources:
+  repositories:
+    - repository: template-apis
+      type: git
+      name: DevopsInfrasture/template-apis
+      ref: refs/heads/main
+
+extends:
+  template: init.yml@template-apis
