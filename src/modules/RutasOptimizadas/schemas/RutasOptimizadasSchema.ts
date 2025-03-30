@@ -1,9 +1,9 @@
 import { BadRequestSchema, RepositoryErrorSchema } from '../../../common/swagger/errors'
 
-const GeolocalizacionSchema = {
+const RutasOptmizadasSchemaSchema = {
     consultarPaises: {
         description: 'Consultar listado de paises',
-        tags: ['Geolocalizacion'],
+        tags: ['rutas optimizadas'],
         response: {
             200: {
                 description: 'Se consultaron correctamente los paises',
@@ -37,7 +37,7 @@ const GeolocalizacionSchema = {
     },
     consultarDepartamentos: {
         description: 'Consultar listado de paises',
-        tags: ['Geolocalizacion'],
+        tags: ['rutas optimizadas'],
         params: {
             type: 'object',
             properties: {
@@ -77,7 +77,7 @@ const GeolocalizacionSchema = {
     },
     consultarCiudades: {
         description: 'Consultar listado de paises',
-        tags: ['Geolocalizacion'],
+        tags: ['rutas optimizadas'],
         params: {
             type: 'object',
             properties: {
@@ -118,7 +118,7 @@ const GeolocalizacionSchema = {
     },
     consultarTiposVia: {
         description: 'Consultar listado de paises',
-        tags: ['Geolocalizacion'],
+        tags: ['rutas optimizadas'],
         response: {
             200: {
                 description: 'Se consultaron correctamente los tipos de vía',
@@ -150,4 +150,4 @@ const GeolocalizacionSchema = {
     },
 }
 
-export default GeolocalizacionSchema
+export default RutasOptmizadasSchemaSchema

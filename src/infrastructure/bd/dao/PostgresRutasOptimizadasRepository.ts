@@ -6,7 +6,7 @@ import TYPESDEPENDENCIES from '@modules/RutasOptimizadas/dependencies/TypesDepen
 import { RutasOptimizadasRepository } from '@modules/RutasOptimizadas/domain/repositories/RutasOptimizadasRepository'
 import { injectable } from 'inversify'
 import { IDatabase, IMain } from 'pg-promise'
-import { IDepartamentoOut } from '@modules/RutasOptimizadas/usecase/dto/out'
+import { IDepartamentoOut, IEnvioOut } from '@modules/RutasOptimizadas/usecase/dto/out'
 
 @injectable()
 export default class PostgresRutasOptimizadasRepository implements RutasOptimizadasRepository {
@@ -20,15 +20,33 @@ export default class PostgresRutasOptimizadasRepository implements RutasOptimiza
                                 AND opr.ruta_optima IS NOT NULL
                                 AND opr.fecha::DATE = CURRENT_DATE - 1`
             const result = await this.db.any(sqlQuery, { id_equipo })
-            console.log('result', result)
-            if (result.length === 0) {
-                return []
-            }
 
             return result
         } catch (error) {
-            logger.error('GEOLOCALIZACION', 'KEY', [`Error consltando departamentos: ${error.message}`])
+            logger.error('Rutas', 'KEY', [`Error consltando departamentos: ${error.message}`])
             throw new PostgresException(500, `Error al consultar data en postgress: ${error.message}`)
+        }
+    }
+
+    async obtenerEnvios(): Promise<IEnvioOut[] | []> {
+        try {
+            const sqlQuery = `SELECT ST_AsGeoJSON(e.destino)::json AS destino,
+                                e.direccion_destino,
+                                e.ciudad_destino,
+                                e.departamento_destino,
+                                e.peso_carga,
+                                e.sla_entrega,
+                                e.estado,
+                                e.estado,
+                                e.prioridad
+                            FROM logistica.envios e
+                            WHERE e.estado != 'entregado' limit 10`
+            const result = await this.db.any(sqlQuery)
+
+            return result
+        } catch (error) {
+            logger.error('ENVIOS', 'KEY', [`Error consultando envíos: ${error.message}`])
+            throw new PostgresException(500, `Error al consultar envíos en postgres: ${error.message}`)
         }
     }
 }

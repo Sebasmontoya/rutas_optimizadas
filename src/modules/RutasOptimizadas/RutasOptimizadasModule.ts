@@ -4,7 +4,7 @@ import { HTTPMETODO, Ruta } from '@common/modules/Ruta'
 import TYPESDEPENDENCIES from './dependencies/TypesDependencies'
 import createDependencies from './dependencies/Dependencies'
 import RutasOptimizadasController from './controllers/RutasOptimizadasController'
-import GeolocalizacionSchema from './schemas/RutasOptimizadasSchema'
+import RutasOptmizadasSchemaSchema from './schemas/RutasOptimizadasSchema'
 
 export default class RutasOptimizadasModule implements IModule {
     private moduloRuta = '/'
@@ -22,7 +22,7 @@ export default class RutasOptimizadasModule implements IModule {
                 metodo: HTTPMETODO.GET,
                 url: '/ruta_optima/:idEquipo',
                 evento: rutasOptimizadasController.consultarRutasOptimizadas.bind(rutasOptimizadasController),
-                schema: GeolocalizacionSchema.consultarDepartamentos,
+                schema: RutasOptmizadasSchemaSchema.consultarDepartamentos,
             },
         ]
     }

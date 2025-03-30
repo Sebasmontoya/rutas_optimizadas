@@ -20,6 +20,6 @@ export default class RutasOptimizadasControllerController {
     async consultarRutasOptimizadas(_req: Req): Promise<Response<Status | null>> {
         const dataIn = validateData<IEquipoIn>(ConsultarRutasOptimizadasSchema, _req.data)
         const data = await this.consultarRutasOptimizadasUseCase.execute(dataIn)
-        return Result.ok<Status>({ ok: 'Se Ruta Optima para el equipo', data })
+        return Result.ok<Status>({ ok: 'consultado rutas optimizadas', data })
     }
 }

@@ -1,1 +1,1 @@
-export * from './IGeolocalizacionOut'
+export * from './IRutasOptimizadasOut'
