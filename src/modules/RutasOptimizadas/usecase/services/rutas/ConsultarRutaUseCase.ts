@@ -5,10 +5,6 @@ import BaseRutaUseCase from './BaseRutaUseCase'
 
 @injectable()
 export default class ConsultarRutaUseCase extends BaseRutaUseCase {
-    /**
-     * Consulta la ruta óptima existente para un equipo
-     * Si no existe una ruta, devuelve los envíos pendientes
-     */
     async execute(data: IEquipoIn): Promise<IOptimizacionRutaOut | IEnvioOut[]> {
         try {
             this.info('RUTAS_OPTIMIZADAS', 'execute', [`Consultando ruta óptima para equipo ${data.idEquipo}`])

@@ -8,10 +8,7 @@ export default class RutaOptimizadaException extends Error {
         this.statusCode = statusCode
         this.isOperational = isOperational
 
-        // Mantener la cadena de prototipos correcta
         Object.setPrototypeOf(this, RutaOptimizadaException.prototype)
-
-        // Capturar la pila de llamadas
         if (Error.captureStackTrace) {
             Error.captureStackTrace(this, this.constructor)
         }

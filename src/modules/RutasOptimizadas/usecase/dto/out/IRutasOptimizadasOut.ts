@@ -61,10 +61,9 @@ export interface IEventoInesperadoOut {
     tipo: 'trafico' | 'clima' | 'vehiculo'
     id_evento?: string
     created_at?: Date
-    speed_factor?: number // Factor de velocidad ajustado por evento
+    speed_factor?: number
 }
 
-// Definir un tipo para los pasos de ruta
 export interface RouteStep {
     type: string
     location?: [number, number]
@@ -74,7 +73,7 @@ export interface RouteStep {
     duration?: number
     distance?: number
     description?: string
-    [key: string]: unknown // Para propiedades adicionales no especificadas
+    [key: string]: unknown
 }
 
 export interface IOptimizacionRutaOut {
@@ -82,7 +81,7 @@ export interface IOptimizacionRutaOut {
     id_equipo: string
     fecha: Date
     ruta_optima: {
-        envios: string[] // IDs de los envíos en orden de entrega
+        envios: string[]
         duracion_total: number
         steps: RouteStep[]
     }
@@ -95,7 +94,6 @@ export type PuntoGeografico = {
     coordinates: [lon: number, lat: number]
 }
 
-// Definición de tipos para la respuesta de la API de OpenRouteService
 export interface OptimizationViolation {
     type: string
     description: string
@@ -143,7 +141,6 @@ export interface OptimizationComputingTimes {
     routing: number
 }
 
-// Respuesta API OpenRouteService
 export interface OptimizationResponse {
     code: number
     summary: {

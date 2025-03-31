@@ -26,6 +26,7 @@ const ENV = {
     OPEN_ROUTE_SERVICE_API_KEY: process.env.OPEN_ROUTE_SERVICE_API_KEY || '',
     URL_OPEN_ROUTE_SERVICE: process.env.URL_OPEN_ROUTE_SERVICE || 'https://api.openrouteservice.org/optimization',
     REDIS: `${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+    TOPIC_PUBSUB: process.env.TOPIC_PUBSUB || 'replanificar-ruta-topic',
 }
 
 if (!isTestingJestEnv) validateEnvs(ENV)

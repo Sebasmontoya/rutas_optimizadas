@@ -11,7 +11,6 @@ export default class CalcularRutaOptimizadaUseCase extends BaseRutaUseCase {
         try {
             this.info('RUTAS_OPTIMIZADAS', 'execute', [`Calculando ruta óptima para equipo ${data.idEquipo}`])
 
-            // Verificar si ya se calculó una ruta hoy
             const rutaExistente = await this.rutasOptimizadasRepository.obtenerRutaOptimaExistente(data.idEquipo)
 
             if (rutaExistente) {
@@ -20,8 +19,6 @@ export default class CalcularRutaOptimizadaUseCase extends BaseRutaUseCase {
                 ])
                 return rutaExistente
             }
-
-            // Recopilar todos los datos necesarios para la optimización
             const [equipo, vehiculo, enviosPendientes, condicionesTrafico] = await Promise.all([
                 this.rutasOptimizadasRepository.obtenerEquipoReparto(data.idEquipo),
                 this.rutasOptimizadasRepository.obtenerVehiculoPorEquipo(data.idEquipo),
@@ -37,22 +34,17 @@ export default class CalcularRutaOptimizadaUseCase extends BaseRutaUseCase {
             }
             this.validarDatos(data.idEquipo, equipo, vehiculo, enviosPendientes)
 
-            // Llamar directamente al servicio de OpenRouteService con el nuevo formato de parámetros
             const optimizationResponse = await OpenRouteService.calcularRutaOptima({
                 vehiculo,
                 equipo,
                 envios: enviosPendientes,
                 condicionesTrafico,
             })
-
-            // Procesar la respuesta usando el servicio
             const rutaOptima = OpenRouteService.procesarRespuestaOptimizacion(
                 optimizationResponse,
                 data.idEquipo,
                 enviosPendientes,
             )
-
-            // Guardar en la base de datos
             const rutaGuardada = await this.rutasOptimizadasRepository.guardarRutaOptimizada(rutaOptima)
 
             this.info('RUTAS_OPTIMIZADAS', 'execute', [

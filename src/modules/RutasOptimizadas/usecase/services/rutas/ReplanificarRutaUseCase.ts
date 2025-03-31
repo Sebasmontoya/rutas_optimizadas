@@ -5,22 +5,13 @@ import RutaOptimizadaException from '@common/http/exceptions/RutaOptimizadaExcep
 import OpenRouteService from '@modules/RutasOptimizadas/domain/services/OpenRouteService'
 import BaseRutaUseCase from './BaseRutaUseCase'
 
-/**
- * Caso de uso específico para replanificar una ruta optimizada
- */
 @injectable()
 export default class ReplanificarRutaUseCase extends BaseRutaUseCase {
-    /**
-     * Replanifica una ruta debido a un evento inesperado
-     * Solo se puede hacer si hay un evento inesperado registrado en el día
-     */
     async execute(data: IReplanificarRutaIn): Promise<IOptimizacionRutaOut> {
         try {
             this.info('RUTAS_OPTIMIZADAS', 'execute', [
                 `Iniciando replanificación de ruta para equipo ${data.idEquipo} por evento ${data.idEvento}`,
             ])
-
-            // Verificar si el evento existe y es de hoy
             const evento = await this.rutasOptimizadasRepository.obtenerEventoInesperado(data.idEvento)
 
             if (!evento) {
@@ -29,14 +20,11 @@ export default class ReplanificarRutaUseCase extends BaseRutaUseCase {
 
             this.validarEvento(evento, data.idEquipo)
 
-            // Obtener la ruta actual
             const rutaActual = await this.rutasOptimizadasRepository.obtenerRutaOptimaExistente(data.idEquipo)
 
             if (!rutaActual) {
                 throw new RutaOptimizadaException(404, 'No hay una ruta previa calculada hoy para replanificar')
             }
-
-            // Recopilar todos los datos actualizados
             const [equipo, vehiculo, enviosPendientes, condicionesTrafico] = await Promise.all([
                 this.rutasOptimizadasRepository.obtenerEquipoReparto(data.idEquipo),
                 this.rutasOptimizadasRepository.obtenerVehiculoPorEquipo(data.idEquipo),
@@ -51,9 +39,6 @@ export default class ReplanificarRutaUseCase extends BaseRutaUseCase {
                 throw new RutaOptimizadaException(404, `No se encontró vehículo asignado al equipo ${data.idEquipo}`)
             }
             this.validarDatos(data.idEquipo, equipo, vehiculo, enviosPendientes)
-
-            // Llamar directamente al servicio de OpenRouteService
-            // Usando el nuevo formato con un objeto de parámetros
             const optimizationResponse = await OpenRouteService.calcularRutaOptima({
                 vehiculo,
                 equipo,
@@ -62,7 +47,6 @@ export default class ReplanificarRutaUseCase extends BaseRutaUseCase {
                 eventoInesperado: evento,
             })
 
-            // Procesar la respuesta usando el servicio
             const nuevaRuta = OpenRouteService.procesarRespuestaOptimizacion(
                 optimizationResponse,
                 data.idEquipo,
@@ -70,7 +54,6 @@ export default class ReplanificarRutaUseCase extends BaseRutaUseCase {
                 data.idEvento,
             )
 
-            // Guardar en la base de datos
             const rutaGuardada = await this.rutasOptimizadasRepository.guardarRutaOptimizada(nuevaRuta)
 
             this.info('RUTAS_OPTIMIZADAS', 'execute', [

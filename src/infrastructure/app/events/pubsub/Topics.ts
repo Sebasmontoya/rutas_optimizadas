@@ -1,5 +1,5 @@
 const TOPICS = {
-    EXAMPLE_TOPIC: 'example-topic',
+    EXAMPLE_TOPIC: 'replacement-topic',
 }
 
 export default TOPICS

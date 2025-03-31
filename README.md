@@ -1,303 +1,192 @@
-# Plantilla de microservicio
+# Servicio de Optimización de Rutas Logísticas
 
-En este repositorio se encuentran la estructura de carpetas y todos los archivos de configuración para un microservicio en Node.
+API para optimización y gestión de rutas logísticas en tiempo real, considerando múltiples factores como tráfico, clima, capacidad de vehículos y SLAs de entrega.
 
-## Estructura del proyecto MIO MODELO
+## Descripción del Servicio
+
+Este microservicio implementa una solución escalable para la optimización de rutas de entrega que permite:
+
+- **Calcular rutas óptimas** considerando ubicación de transportistas, condiciones de tráfico/clima y capacidad de carga
+- **Replanificar rutas en tiempo real** ante eventos inesperados
+- **Priorizar entregas** basadas en SLAs y criticidad
+- **Gestionar eventos inesperados** que afectan la operación logística
+
+## Endpoints Principales
+
+- `GET /rutas-optimizadas/{idEquipo}` - Consultar ruta optimizada para un equipo
+- `POST /rutas-optimizadas/calcular` - Calcular una nueva ruta óptima
+- `POST /rutas-optimizadas/replanificar` - Replanificar una ruta por evento inesperado
+- `POST /rutas-optimizadas/eventos` - Registrar un evento inesperado
+
+## Tecnologías Implementadas
+
+- **Backend**: Node.js + TypeScript
+- **Arquitectura**: Clean Architecture + SOLID
+- **Base de Datos**: PostgreSQL con extensión PostGIS para datos geoespaciales
+- **Caching**: Redis para optimización de rendimiento
+- **Mensajería**: Kafka para manejo de eventos asíncronos
+- **Testing**: Jest con cobertura >85%
+- **Autenticación**: JWT/OAuth 2.0
+- **Documentación**: Swagger/OpenAPI
+
+## Estructura del proyecto
 
 ```
-
-├── 📁.husky
-│   └── .gitignore
-│   └── commit-msg
-│   └── pre-commit
-├── 📁 @types
-│   ├── 📁 reflect-metadata
-│   │   ├── index.d.ts
-├── 📁 env
-│   ├── azure.env
-├── 📁 manifests
-│   ├── 📁 base
-│   │   ├── deployment.yml
-│   │   ├── hpa.yml
-│   │   ├── kustomization.yml
-│   │   ├── services.yml
-│   │   ├── virtualservice.yml
-│   ├── 📁 overlays
-│   │   ├── 📁 dev
-│   │   │   ├── hpa.yml
-│   │   │   ├── kuztomization.yml
-│   │   ├── 📁 prod
-│   │   │   ├── hpa.yml
-│   │   │   ├── kuztomization.yml
-│   │   ├── 📁 test
-│   │   │   ├── hpa.yml
-│   │   │   ├── kuztomization.yml
-├── 📁 src
-│   ├── 📁 common
-│   │   ├── 📁 dependencies 
-│   │   │   ├── DependencyContainer.ts
-│   │   ├── 📁 enum
-│   │   │   ├── algunEnum.ts
-│   │   │   ├── index.ts 
-│   │   ├── 📁 envs 
-│   │   │   ├── EnvFile.ts
-│   │   │   ├── Envs.ts
-│   │   │   ├── index.ts 
-│   │   │   ├── Validate.ts
-│   │   ├── 📁 exceptions 
-│   │   │   ├── CustomError.ts
-│   │   ├── 📁 http 
-│   │   │   ├── 📁 exceptions
-│   │   │   │   ├── ErrorCode.ts
-│   │   │   │   ├── Exceptions.ts
-│   │   │   │   ├── index.ts
-│   │   │   ├── 📁 repositories
-│   │   │   │   ├── AxiosRepository.ts
-│   │   │   ├── 📁 services
-│   │   │   │   ├── ApiServicesAxios.ts
-│   │   │   ├── Request.ts
-│   │   │   ├── Response.ts
-│   │   │   ├── Result.ts
-│   │   ├── 📁 logger
-│   │   │   ├── index.ts
-│   │   │   ├── Logger.ts
-│   │   ├── 📁 modules
-│   │   │   ├── IModule.ts
-│   │   │   ├── IUseCase.ts
-│   │   │   ├── ModulesFactory.ts
-│   │   │   ├── Ruta.ts
-│   │   ├── 📁 util
-│   │   │   ├── Buffer.ts
-│   │   │   ├── CustomError.ts
-│   │   │   ├── JSON.ts
-│   │   │   ├── Schemas.ts   
-│   ├── 📁 infraestructure
-│   │   ├── 📁 app
-│   │   │   ├── 📁 events
-│   │   │   |   ├── 📁 pubsub
-│   │   │   |   |   ├── index.ts
-│   │   │   |   |   ├── PubSubBatch.ts
-│   │   │   |   |   ├── Topics.ts
-│   │   │   |   ├── index.ts
-│   │   │   ├── 📁 schemas
-│   │   │   |   ├── index.ts
-│   │   │   |   ├── IAlgunSchema.ts
-│   │   │   |   ├── PubsubSchema.ts
-│   │   │   ├── 📁 server
-│   │   │   |   ├── 📁 fastify
-│   │   │   |   |   ├── index.ts
-│   │   │   |   |   ├── IServer.ts
-│   │   │   |   |   ├── TypeServer.ts
-│   │   ├── 📁 db
-│   │   │   ├── 📁 adapter
-│   │   │   |   ├── Config.ts
-│   │   │   ├── 📁 dao
-│   │   │   |   ├── PostgresAlgunRepository.ts
-│   │   │   |   ├── Config.ts
-│   ├── 📁 modules
-│   │   ├── 📁 algunmodulo
-│   │   │   ├── 📁 controllers
-│   │   │   |   ├── index.ts
-│   │   │   |   ├── AlgunModuloController.ts
-│   │   │   ├── 📁 dependencies
-│   │   │   |   ├── Dependencies.ts
-│   │   │   |   ├── TypesDependencies.ts
-│   │   │   ├── 📁 domain
-│   │   │   |   ├── 📁 entities
-│   │   │   |   |   ├── index.ts
-│   │   │   |   |   ├── AlgunaEntidad.ts
-│   │   │   |   ├── 📁 events
-│   │   │   |   |   ├── index.ts
-│   │   │   |   |   ├── AlgunEvento.ts
-│   │   │   |   ├── 📁 repositories
-│   │   │   |   |   ├── index.ts
-│   │   │   |   |   ├── AlgunRepository.ts
-│   │   │   ├── 📁 usecase
-│   │   │   |   ├── 📁 dto
-│   │   │   |   |   ├──  📁 in
-│   │   │   |   |   |    ├── index.ts
-│   │   │   |   |   |    ├── IAlgunaInterfaz.ts
-│   │   │   |   |   ├──  📁 out
-│   │   │   |   |   |    ├── index.ts
-│   │   │   |   |   |    ├── IAlgunaInterfaz.ts
-│   │   │   |   ├── 📁 services
-│   │   │   |   |   ├── index.ts
-│   │   │   |   |   ├── AlgunServicioUseCase.ts
-│   │   │   ├── index.ts
-│   │   │   ├── AlgunModule.ts
-│   │   ├── 📁 otromodulo
-│   │   ├── 📁 shared
-│   │   │   ├── 📁 infraestructure
-│   │   │   |   ├── Controller.ts
-│   │   │   |   ├── index.ts
-│   │   │   ├──  index.ts
-│   │   ├── index.ts
-│   ├── index.ts
+├── 📁 src
+│   ├── 📁 common
+│   │   ├── 📁 dependencies
+│   │   ├── 📁 http
+│   │   ├── 📁 logger
+│   │   └── ...
+│   ├── 📁 infraestructure
+│   │   ├── 📁 app
+│   │   │   ├── 📁 events
+│   │   │   ├── 📁 server
+│   │   ├── 📁 db
+│   │   │   ├── 📁 adapter
+│   │   │   ├── 📁 dao
+│   ├── 📁 modules
+│   │   ├── 📁 RutasOptimizadas
+│   │   │   ├── 📁 controllers
+│   │   │   ├── 📁 dependencies
+│   │   │   ├── 📁 domain
+│   │   │   │   ├── 📁 entities
+│   │   │   │   ├── 📁 repositories
+│   │   │   │   ├── 📁 types
+│   │   │   ├── 📁 usecase
+│   │   │   │   ├── 📁 dto
+│   │   │   │   │   ├── 📁 in
+│   │   │   │   │   ├── 📁 out
+│   │   │   │   ├── 📁 services
+│   │   ├── 📁 shared
 └── test
-│   ├── Application.test.ts
 ```
 
-# Recomendaciones
+## Requerimientos
 
--   ## Editor
+- Node.js 18+ LTS
+- PostgreSQL 13+ con extensión PostGIS
+- Redis 6+
+- Kafka (opcional para procesamiento de eventos)
 
-        Se recomienda utilizar [VS Code](https://code.visualstudio.com/)
-
--   ## Extensiones recomendadas
-
-        -   Prettier - Code formatter
-        -   npm
-        -   npm Intellisense
-        -   Jest-cucumber code generator
-        -   Javascript (ES6) code snippets
-        -   GitLens
-        -   ESLint
-        -   EditorConfig
-        -   TypeScript Hero
-        -   Path Intellinsense
-
--   ## Gestor de paquetes
-
-        El gestor de paquetes utilizado es [Yarn](https://yarnpkg.com/)
-
-# Primeros pasos
-
-Se debe tener la versión estable [**Node.js**](https://nodejs.org/) (LTS) y tener instalado **Yarn**
+## Primeros pasos
 
 ### Instalación de dependencias
 
 ```zsh
-# Consola
 yarn
 ```
 
-### Preparación Entorno
+### Preparación del Entorno
 
-Configurar variables de ambiente archivo ```.env``` de la carpeta raiz del proyecto
-definir en ese archivo  variables obligatorias para logs
+Configurar variables de ambiente en el archivo `.env`:
+
 ```
-DOMAIN=''
-PREFIX_LOGGER=''
-LOGGER_LEVEL=''
+# Configuración básica
+PORT=8080
+NODE_ENV=development
+
+# Logging
+DOMAIN='logistica'
+PREFIX_LOGGER='rutas_optimizadas'
+LOGGER_LEVEL='info'
+
+# Base de datos
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=logistica
+DB_SCHEMA=logistica
+
+# Cache
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# OpenRouteService API
+ORS_API_KEY=your_api_key
+ORS_API_URL=https://api.openrouteservice.org
+
+# JWT
+JWT_SECRET=your_secret_key
+JWT_EXPIRATION=1h
 ```
 
-### Descripción de funcionamiento
+### Base de datos
 
-[DESCRIPCION FUNCIONAMIENTO PLANTILLA GUIAS](https://dev.azure.com/CMercantilDev/DEVOPS_TEMPLATE/_wiki/wikis/DEVOPS_TEMPLATE.wiki/1251/%F0%9F%97%82%EF%B8%8F-DESCRIPCION-FLUJO-DE-PLANTILLA-DDD)
-
-
-## Post instalación
-
-Se debe ejecutar el comando para tener el pre-commit
+El servicio requiere una base de datos PostgreSQL con la extensión PostGIS. Puede inicializarla con:
 
 ```zsh
-# Consola
-yarn husky:install
+yarn db:init
 ```
 
 ### Ejecutar el proyecto
 
-Solo tienes que ejecutar el comando `yarn dev` y dirigirse a un navegador con la url **http://localhost:8080/api/v1** o **http://localhost:8080/docs**
-
-### Validar versionamiento de las dependencias
-
 ```zsh
-# Consola
-yarn outdated
+# Modo desarrollo con hot-reload
+yarn dev
+
+# Producción
+yarn build
+yarn start
 ```
 
-**Si no hay ningún warning ni error entonces puede continuar con los pasos, si por lo contrario los tiene por favor comunicarse con el Arquitecto**
+El servidor estará disponible en:
+- API: http://localhost:8080/api/v1
+- Documentación: http://localhost:8080/docs
 
-### Copiar la estructura del proyecto en el directorio deseado
+## Características principales
+
+- **Alta escalabilidad**: Diseñado para manejar millones de envíos diarios
+- **Baja latencia**: Tiempos de respuesta <500ms mediante caching optimizado
+- **Resiliencia**: Manejo de fallos y estrategias de retry
+- **Seguridad**: Implementación de JWT, validación de parámetros y protección OWASP
+- **Observabilidad**: Logs estructurados y métricas para monitoreo
+
+## Testing
 
 ```zsh
-# Consola -> Ir a la ruta donde se encuentre la plantilla
-cp -R ./ destination_folder
+# Ejecutar tests unitarios e integración
+yarn test
+
+# Ver cobertura de código
+yarn coverage
 ```
+
+## Documentación
+
+La documentación detallada de la API está disponible mediante Swagger en ruta `/docs` del servidor.
 
 ## Scripts
 
 ### build
 
 ```zsh
-# Se utiliza para compilar el proyecto
+# Compilar el proyecto
 yarn build
-```
-
-### infra-as-code
-
-```zsh
-# Se utiliza generar los recursos de infraestructura en GCP
-yarn infra-as-code
-```
-
-### lint
-
-```zsh
-# Se corre el linter
-yarn lint
-```
-
-### format
-
-```zsh
-# Se utiliza para formatear el código
-yarn format
-```
-
-### format-check
-
-```zsh
-# Se utiliza para verificar el formato del código
-yarn format-check
 ```
 
 ### dev
 
 ```zsh
-# Se utiliza para correr el servidor y estar atento a los cambios en los archivos Typescript
+# Ejecutar en modo desarrollo
 yarn dev
-```
-
-### start
-
-```zsh
-# Se utiliza para correr el servidor
-yarn start
-```
-
-### start:debug
-
-```zsh
-# Se utiliza para correr el servidor en modo debug
-yarn start:debug
 ```
 
 ### test
 
 ```zsh
-# Se utiliza para ejecutar los tests
+# Ejecutar tests
 yarn test
 ```
 
 ### coverage
 
 ```zsh
-# Se utiliza para mostrar la cobertura de pruebas
+# Verificar cobertura de tests
 yarn coverage
 ```
 
-### release
-
-```zsh
-# Se utiliza cada vez que se va a desplegar una versión CHANGELOG.md
-yarn release
-```
-
-## Commit lint
-
-Se utiliza la convención estandar para escribir el mensaje en el commit
-
-[Commit Message Convention](https://github.com/conventional-changelog/commitlint)
-
 ---
+
+Para más información sobre decisiones técnicas y arquitectura, revisar el documento de [Justificación Técnica](./docs/justificacion-tecnica.md).
