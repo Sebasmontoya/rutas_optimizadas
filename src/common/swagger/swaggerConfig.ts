@@ -3,7 +3,7 @@ import { FastifyDynamicSwaggerOptions } from '@fastify/swagger'
 export const swaggerConfig: FastifyDynamicSwaggerOptions = {
     openapi: {
         info: {
-            title: 'Microservice Template',
+            title: 'Rutas Optimizadas API',
             description: 'Este es el template para microservicios de Coordinadora Mercantil S.A',
             version: '0.1.0',
             contact: {

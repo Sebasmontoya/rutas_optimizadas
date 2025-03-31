@@ -23,6 +23,9 @@ const ENV = {
     PREFIX_LOGGER: process.env.PREFIX_LOGGER || 'template-backend-ms',
     LOGGER_LEVEL: process.env.LOGGER_LEVEL || 'false',
     VERSION: process.env.VERSION ?? 'v1',
+    OPEN_ROUTE_SERVICE_API_KEY: process.env.OPEN_ROUTE_SERVICE_API_KEY || '',
+    URL_OPEN_ROUTE_SERVICE: process.env.URL_OPEN_ROUTE_SERVICE || 'https://api.openrouteservice.org/optimization',
+    REDIS: `${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
 }
 
 if (!isTestingJestEnv) validateEnvs(ENV)
